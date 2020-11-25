@@ -1,0 +1,307 @@
+<template>
+    <div>
+        <div class="container pt-3">
+            <!--~~~~~~~ TABLE ONE ~~~~~~~~~-->
+            <div
+                class="_1adminOverveiw_table_recent _box_shadow _border_radious _mar_b30 _p20"
+            >
+                <p class="_title0">
+                    Role Manangement
+                    <Select
+                        v-model="data.id"
+                        placeholder="Select admin type"
+                        style="width:300px"
+                        @on-change="changeAdmin"
+                    >
+                        <Option
+                            :value="item.id"
+                            v-for="(item, i) in items"
+                            :key="i"
+                            v-if="items.length"
+                            >{{ item.name }}</Option
+                        >
+                    </Select>
+                </p>
+
+                <div class="_overflow _table_div">
+                    <table class="_table">
+                        <!-- TABLE TITLE -->
+                        <tr>
+                            <th>Resource name</th>
+                            <th>Read</th>
+                            <th>Write</th>
+                            <th>Update</th>
+                            <th>Delete</th>
+                        </tr>
+                        <!-- TABLE TITLE -->
+
+                        <!-- ITEMS -->
+                        <tr v-for="(r, i) in resources" :key="i">
+                            <td>{{ r.resourceName }}</td>
+                            <td><Checkbox v-model="r.read"></Checkbox></td>
+                            <td><Checkbox v-model="r.write"></Checkbox></td>
+                            <td>
+                                <Checkbox v-model="r.update"></Checkbox>
+                            </td>
+                            <td>
+                                <Checkbox v-model="r.delete"></Checkbox>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="pt-2">
+                        <Button
+                            class="float-right"
+                            type="primary"
+                            long
+                            :loading="isSending"
+                            :disabled="isSending"
+                            @click="assignRoles"
+                            >Assign</Button
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            data: {
+                id: null
+            },
+            isSending: false,
+            items: [],
+            resources: [
+                {
+                    resourceName: "Home",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: ""
+                },
+                {
+                    resourceName: "Course",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "course"
+                },
+                {
+                    resourceName: "Subject",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "subject"
+                },
+                {
+                    resourceName: "Section",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "section"
+                },
+                {
+                    resourceName: "Campus",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "campus"
+                },
+                {
+                    resourceName: "Room",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "room"
+                },
+                {
+                    resourceName: "Time",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "time"
+                },
+                {
+                    resourceName: "Users",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "users"
+                },
+                {
+                    resourceName: "Assign Role",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "assign-role"
+                },
+                {
+                    resourceName: "Preferred Subject",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "preferred-subject"
+                },
+                 {
+                    resourceName: "Preferred Time",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "preferred-time"
+                },
+            ],
+            defaultResourcesPermission: [
+                {
+                    resourceName: "Home",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: ""
+                },
+                {
+                    resourceName: "Course",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "course"
+                },
+                {
+                    resourceName: "Subject",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "subject"
+                },
+                {
+                    resourceName: "Section",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "section"
+                },
+                {
+                    resourceName: "Campus",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "campus"
+                },
+                {
+                    resourceName: "Room",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "room"
+                },
+                {
+                    resourceName: "Time",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "time"
+                },
+                {
+                    resourceName: "Users",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "users"
+                },
+                {
+                    resourceName: "Assign Role",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "assign-role"
+                },
+                {
+                    resourceName: "Preferred Subject",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "preferred-subject"
+                },
+                {
+                    resourceName: "Preferred Time",
+                    read: false,
+                    write: false,
+                    update: false,
+                    delete: false,
+                    name: "preferred-time"
+                },
+            ]
+        };
+    },
+
+    methods: {
+        async assignRoles() {
+            console.log(this.resources);
+            let data = JSON.stringify(this.resources);
+            const res = await this.callApi("post", "app/assign_roles", {
+                permission: data,
+                id: this.data.id
+            });
+            if (res.status == 200) {
+                this.success("Role has been assigned successfully!");
+                let index = this.items.findIndex(
+                    item => item.id == this.data.id
+                );
+                this.items[index].permission = data;
+            } else {
+                this.swr();
+            }
+        },
+        changeAdmin() {
+            let index = this.items.findIndex(item => item.id == this.data.id);
+            let permission = this.items[index].permission;
+            if (!permission) {
+                this.resources = this.defaultResourcesPermission;
+            } else {
+                //this.resources = JSON.parse(permission);
+            }
+        }
+    },
+
+    async created() {
+        console.log(this.$route);
+        const res = await this.callApi("get", "app/get_roles");
+        if (res.status === 200) {
+            this.items = res.data;
+            if (res.data.length) {
+                this.data.id = res.data[0].id;
+                if (res.data[0].permission) {
+                    this.resources = JSON.parse(res.data[0].permission);
+                    this.resources = this.defaultResourcesPermission;
+                }
+            }
+        } else {
+            this.swr();
+        }
+    }
+};
+</script>

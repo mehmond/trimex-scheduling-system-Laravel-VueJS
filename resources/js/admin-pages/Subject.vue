@@ -5,13 +5,28 @@
             <div
                 class="_1adminOverveiw_table_recent _box_shadow _border_radious _mar_b30 _p20"
             >
-                <p class="_title0">
-                    Subject
-                    <Button @click="addModal = true" v-if="isWritePermitted"
-                        ><Icon type="md-add" /> Add</Button
+                <Row>
+                    <Col span="18" push="6">
+                        <Input
+                            type="text"
+                            v-model="searchQuery"
+                            placeholder="Search here..."
+                            ><Icon
+                                type="ios-search"
+                                slot="prepend"
+                            ></Icon></Input
+                    ></Col>
+                    <Col span="6" pull="18"
+                        ><p class="_title0">
+                            Section
+                            <Button
+                                @click="addModal = true"
+                                v-if="isWritePermitted"
+                                ><Icon type="md-add" /> Add</Button
+                            >
+                        </p></Col
                     >
-                </p>
-
+                </Row>
                 <div class="_overflow _table_div">
                     <table class="_table">
                         <!-- TABLE TITLE -->
@@ -31,7 +46,7 @@
 
                         <!-- ITEMS -->
                         <tr
-                            v-for="(item, i) in items"
+                            v-for="(item, i) in filteredItems"
                             :key="i"
                             v-if="items.length"
                         >
@@ -62,6 +77,16 @@
                         </tr>
                         <!-- ITEMS -->
                     </table>
+                    <div class="float-right pt-3">
+                            <Page
+                                :total="pageInfo.total"
+                                :current-page="pageInfo.current_page"
+                                :page-size="parseInt(pageInfo.per_page)"
+                                @on-change="getData"
+                                v-if="pageInfo"
+                                simple
+                            />
+                        </div>
                 </div>
             </div>
             <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~ ADD MODAL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
@@ -196,18 +221,18 @@
                 </Select>
 
                 <Select
-                            class="pb-2"
-                            v-model="data.year"
-                            placeholder="Select year"
-                        >
-                            <Option
-                                :value="year.id"
-                                v-for="(year, i) in years"
-                                :key="i"
-                                v-if="years.length"
-                                >{{ year.name }}</Option
-                            >
-                        </Select>
+                    class="pb-2"
+                    v-model="data.year"
+                    placeholder="Select year"
+                >
+                    <Option
+                        :value="year.id"
+                        v-for="(year, i) in years"
+                        :key="i"
+                        v-if="years.length"
+                        >{{ year.name }}</Option
+                    >
+                </Select>
 
                 <Select
                     class="pb-2"
@@ -261,6 +286,9 @@ export default {
             isAdding: false,
             items: [],
             courses: [],
+            total: 1,
+            searchQuery: "",
+            pageInfo: "",
             years: [],
             editData: {
                 name: "",
@@ -279,6 +307,15 @@ export default {
     },
 
     methods: {
+        handleSelectAll(status) {
+            this.$refs.selection.selectAll(status);
+            console.log(this.$refs.selection);
+        },
+        modal(status) {
+            this.$refs.selection.selectAll(status);
+            console.log(this.$refs.selection);
+        },
+
         async store() {
             if (this.data.name.trim() == "")
                 return this.error("subject name is required");
@@ -316,7 +353,7 @@ export default {
             this.isAdding = false;
         },
         async update() {
-            console.log(this.editData)
+            console.log(this.editData);
             if (this.editData.name.trim() == "")
                 return this.error("Subject name is required");
             if (this.editData.lec.trim() == "")
@@ -375,23 +412,32 @@ export default {
                 successMsg: "Subject has been deleted successfully!"
             };
             this.$store.commit("setDeletingModalObj", deleteModalObj);
+        },
+        async getData(page = 1) {
+            const res = await this.callApi(
+                "get",
+                `app/index_subject?page=${page}&total=${this.total}`
+            );
+            if (res.status === 200) {
+                this.items = res.data.data;
+                this.pageInfo = res.data;
+            } else {
+                if (res.status === 404) {
+                    this.error("No Records Found!");
+                }
+                this.swr();
+            }
         }
     },
 
     async created() {
-        const [res, course, year] = await Promise.all([
-this.callApi("get", "app/index_subject"),
-this.callApi("get", "app/index_course"),
-this.callApi("get", "app/index_year"),
- ]) this.callApi("get", "app/index_subject");
-        if (res.status === 200) {
-            this.items = res.data;
-        } else {
-            if (res.status === 404) {
-                this.error("No Records Found!");
-            }
-            this.swr();
-        }
+        this.getData();
+        const [course, year] = await Promise.all([
+            this.callApi("get", "app/index_course"),
+            this.callApi("get", "app/index_year"),
+            this.callApi("get", "app/index_subject")
+        ]);
+
         if (course.status === 200) {
             this.courses = course.data;
         } else {
@@ -413,7 +459,14 @@ this.callApi("get", "app/index_year"),
         deleteModal
     },
     computed: {
-        ...mapGetters(["getDeleteModalObj"])
+        ...mapGetters(["getDeleteModalObj"]),
+        filteredItems: function() {
+            return this.items.filter(item => {
+                return item.name
+                    .toLowerCase()
+                    .includes(this.searchQuery.toLowerCase());
+            });
+        } 
     },
     watch: {
         getDeleteModalObj(obj) {

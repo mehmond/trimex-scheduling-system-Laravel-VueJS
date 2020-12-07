@@ -13,9 +13,9 @@ class SubjectsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Subject::latest()->get();
+        return Subject::latest()->paginate($request->total);
     }
 
     /**

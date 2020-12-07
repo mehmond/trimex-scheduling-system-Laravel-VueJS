@@ -22,6 +22,8 @@
                 >
                     <Icon type="ios-lock-outline" slot="prepend" />
                 </Input>
+
+                <p style="font-size: 12px;">Reset Password? <router-link to="/reset-password">Click here</router-link></p>
                 <div class="login_footer">
                     <router-link to='/register'>
                     <Button type="default" shape="circle"

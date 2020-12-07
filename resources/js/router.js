@@ -4,6 +4,7 @@ Vue.use(Router);
 //Components
 import Login from "./components/Login.vue";
 import Register from "./components/Register.vue";
+import ResetPassword from "./components/ResetPassword.vue";
 //Admin
 import Home from "./admin-pages/Home.vue";
 import Users from "./admin-pages/Users.vue";
@@ -32,7 +33,11 @@ const routes = [
         component: Register,
         name: "register"
     },
-
+    {
+        path: "/reset-password",
+        component: ResetPassword,
+        name: "reset-password"
+    },
     {
         path: "/",
         component: Home,

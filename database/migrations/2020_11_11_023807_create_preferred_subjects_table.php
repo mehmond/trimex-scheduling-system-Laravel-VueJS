@@ -15,8 +15,8 @@ class CreatePreferredSubjectsTable extends Migration
     {
         Schema::create('preferred_subjects', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('subject_id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('subject_id')->constraint();
+            $table->unsignedBigInteger('user_id')->constraint();
             $table->timestamps();
         });
     }

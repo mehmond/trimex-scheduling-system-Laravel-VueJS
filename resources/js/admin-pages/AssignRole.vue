@@ -282,7 +282,7 @@ export default {
             if (!permission) {
                 this.resources = this.defaultResourcesPermission;
             } else {
-                //this.resources = JSON.parse(permission);
+                this.resources = JSON.parse(permission);
             }
         }
     },
@@ -296,7 +296,7 @@ export default {
                 this.data.id = res.data[0].id;
                 if (res.data[0].permission) {
                     this.resources = JSON.parse(res.data[0].permission);
-                    this.resources = this.defaultResourcesPermission;
+                    //this.resources = this.defaultResourcesPermission;
                 }
             }
         } else {

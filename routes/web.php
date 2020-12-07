@@ -17,6 +17,9 @@ use App\Http\Middleware\AdminCheck;
 Route::get('/logout', 'App\Http\Controllers\GenericController@logout');
 Route::any('/', 'App\Http\Controllers\GenericController@index');
 Route::post('app/register', 'App\Http\Controllers\RegisterController@register');
+Route::post('send-token', 'App\Http\Controllers\GenericController@sendToken');
+Route::post('validate-token', 'App\Http\Controllers\GenericController@validateToken');
+Route::post('reset-password', 'App\Http\Controllers\GenericController@resetPassword');
 
 Route::prefix('app')->middleware([AdminCheck::class])->group(function () {
     ///AUTH
